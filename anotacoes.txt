@@ -1,0 +1,7 @@
+- Terminar autenticador de sessão -- OK(Não testado)
+- Continuar Implementar Mappers
+- Implementar identificador unico do pedido -- OK(Não testado)
+- Implementar adicionais no pedido
+- Implementar calculo tempo de espera
+- Implementar calculo de frete
+- Implementar formas de pagamento
