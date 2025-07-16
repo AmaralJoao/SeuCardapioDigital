@@ -4,6 +4,7 @@ import com.amaral.SeuCardapioDigital.Dto.Request.ProdutoRequestDto;
 import com.amaral.SeuCardapioDigital.Dto.Response.ProdutoResponseDto;
 import com.amaral.SeuCardapioDigital.Model.ProdutoModel;
 import com.amaral.SeuCardapioDigital.Service.ProdutoService;
+import com.amaral.SeuCardapioDigital.Utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,7 @@ public class ProdutosController {
     private ProdutoService produtoService;
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping
+    @PostMapping("/cadastrar")
     public ResponseEntity<ProdutoResponseDto> cadastrarProduto(@RequestBody ProdutoRequestDto produtoRequestDto){
         return ResponseEntity.ok(produtoService.criarNovoProduto(produtoRequestDto));
     }
@@ -49,10 +50,10 @@ public class ProdutosController {
     }
 
     //@PreAuthorize("isAuthenticated()")
-    @GetMapping("/listartodos/{id}")
-    public ResponseEntity<List<ProdutoResponseDto>> listarProdutos(
-            @PathVariable("id") long idEstabelecimento/*,
-            @PageableDefault(size = 10, sort = "nomeDoProduto", direction = Sort.Direction.ASC) Pageable pageable*/) {
+    @GetMapping("/listartodos")
+    public ResponseEntity<List<ProdutoResponseDto>> listarProdutos(/*@PageableDefault(size = 10, sort = "nomeDoProduto", direction = Sort.Direction.ASC) Pageable pageable*/) {
+
+        Long idEstabelecimento = AuthUtils.getIdEstabelecimento();
 
         List<ProdutoResponseDto> produtos = produtoService.listarProdutosPorEstabelecimento(idEstabelecimento/*, pageable*/);
         return ResponseEntity.ok(produtos);
