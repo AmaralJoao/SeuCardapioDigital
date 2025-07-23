@@ -27,6 +27,12 @@ public class EstabelecimentoModel {
     @Column(name = "contatoEstabelecimento", unique = true)
     private String contato;
 
+    @Column(name = "idAtivo")
+    private int ativo;
+
+    @Column(name = "url")
+    private String url;
+
     public EstabelecimentoModel() {
     }
 
@@ -37,6 +43,7 @@ public class EstabelecimentoModel {
         this.senha = senha;
         this.cnpj = cnpj;
         this.contato = contato;
+        this.ativo = 0;
     }
 
     public long getId() {
@@ -85,5 +92,21 @@ public class EstabelecimentoModel {
 
     public void setContato(String contato) {
         this.contato = contato;
+    }
+
+    public int getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(int ativo) {
+        this.ativo = ativo;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
