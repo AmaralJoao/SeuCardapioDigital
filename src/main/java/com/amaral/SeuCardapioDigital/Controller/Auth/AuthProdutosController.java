@@ -1,15 +1,10 @@
-package com.amaral.SeuCardapioDigital.Controller;
+package com.amaral.SeuCardapioDigital.Controller.Auth;
 
 import com.amaral.SeuCardapioDigital.Dto.Request.ProdutoRequestDto;
 import com.amaral.SeuCardapioDigital.Dto.Response.ProdutoResponseDto;
-import com.amaral.SeuCardapioDigital.Model.ProdutoModel;
 import com.amaral.SeuCardapioDigital.Service.ProdutoService;
 import com.amaral.SeuCardapioDigital.Utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +21,7 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:5500") // ou especifique a origem com "http://localhost:5500"
 @RestController
 @RequestMapping("/auth/api/produto")
-public class ProdutosController {
+public class AuthProdutosController {
 
     @Autowired
     private ProdutoService produtoService;
@@ -49,13 +44,4 @@ public class ProdutosController {
         return ResponseEntity.ok(imagemUrl);
     }
 
-    //@PreAuthorize("isAuthenticated()")
-    @GetMapping("/listartodos")
-    public ResponseEntity<List<ProdutoResponseDto>> listarProdutos(/*@PageableDefault(size = 10, sort = "nomeDoProduto", direction = Sort.Direction.ASC) Pageable pageable*/) {
-
-        Long idEstabelecimento = AuthUtils.getIdEstabelecimento();
-
-        List<ProdutoResponseDto> produtos = produtoService.listarProdutosPorEstabelecimento(idEstabelecimento/*, pageable*/);
-        return ResponseEntity.ok(produtos);
-    }
 }

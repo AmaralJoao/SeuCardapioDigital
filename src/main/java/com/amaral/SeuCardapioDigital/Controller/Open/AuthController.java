@@ -1,4 +1,4 @@
-package com.amaral.SeuCardapioDigital.Controller;
+package com.amaral.SeuCardapioDigital.Controller.Open;
 
 import com.amaral.SeuCardapioDigital.Dto.Request.LoginRequestDto;
 import com.amaral.SeuCardapioDigital.Dto.Response.LoginResponseDto;
@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("auth/api/")
+@RequestMapping("/open/api/")
 public class AuthController {
 
     @Autowired

@@ -1,4 +1,4 @@
-package com.amaral.SeuCardapioDigital.Controller;
+package com.amaral.SeuCardapioDigital.Controller.Open;
 
 import com.amaral.SeuCardapioDigital.Dto.Request.EstabelecimentoRequestDto;
 import com.amaral.SeuCardapioDigital.Dto.Response.EstabelecimentoResponseDto;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth/api/estabelecimento")
-public class EstabelecimentoController {
+@RequestMapping("/open/api/estabelecimento")
+public class OpenEstabelecimentoController {
 
     @Autowired
     private EstabelecimentoService estabelecimentoService;
