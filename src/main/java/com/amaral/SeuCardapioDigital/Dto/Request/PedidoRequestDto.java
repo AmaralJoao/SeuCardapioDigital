@@ -9,7 +9,7 @@ public class PedidoRequestDto {
     @NotNull(message = "ID do cliente é obrigatório")
     private Long idCliente;
 
-    //@NotNull(message = "ID do estabelecimento é obrigatório")
+    @NotNull(message = "ID do estabelecimento é obrigatório")
     private Long idEstabelecimento;
 
     @NotEmpty(message = "O pedido deve conter ao menos um item")

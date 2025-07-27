@@ -1,5 +1,6 @@
 package com.amaral.SeuCardapioDigital.Model;
 
+import com.amaral.SeuCardapioDigital.Enum.StatusPedidoEnum;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -36,7 +37,7 @@ public class PedidoModel {
     private LocalDateTime dataHoraDoPedido;
 
     @Column(name = "idStatus", nullable = false)
-    private int status;
+    private StatusPedidoEnum status;
 
     @Column(name = "valorTotalDoPedido", nullable = false)
     private BigDecimal valorTotalDoPedido;
@@ -44,7 +45,7 @@ public class PedidoModel {
     public PedidoModel() {
     }
 
-    public PedidoModel(long id, List<ItemPedidoModel> itemDoPedido, ClienteModel cliente, EstabelecimentoModel estabelecimento, Long codigoDoPedido, LocalDateTime dataHoraDoPedido, int status, BigDecimal valorTotalDoPedido) {
+    public PedidoModel(long id, List<ItemPedidoModel> itemDoPedido, ClienteModel cliente, EstabelecimentoModel estabelecimento, Long codigoDoPedido, LocalDateTime dataHoraDoPedido, StatusPedidoEnum status, BigDecimal valorTotalDoPedido) {
         this.id = id;
         this.itemDoPedido = itemDoPedido;
         this.cliente = cliente;
@@ -103,11 +104,11 @@ public class PedidoModel {
         this.dataHoraDoPedido = dataHoraDoPedido;
     }
 
-    public int getStatus() {
+    public StatusPedidoEnum getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(StatusPedidoEnum status) {
         this.status = status;
     }
 
