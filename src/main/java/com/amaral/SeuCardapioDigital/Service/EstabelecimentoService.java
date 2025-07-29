@@ -5,9 +5,14 @@ import com.amaral.SeuCardapioDigital.Dto.Response.EstabelecimentoResponseDto;
 import com.amaral.SeuCardapioDigital.Mapper.EstabelecimentoMapper;
 import com.amaral.SeuCardapioDigital.Model.EstabelecimentoModel;
 import com.amaral.SeuCardapioDigital.Repository.EstabelecimentoRepository;
+import com.amaral.SeuCardapioDigital.Repository.HorarioFuncionamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Service
 public class EstabelecimentoService {
@@ -16,7 +21,6 @@ public class EstabelecimentoService {
     private EstabelecimentoRepository estabelecimentoRepository;
     @Autowired
     private EstabelecimentoMapper estabelecimentoMapper;
-
 
     public EstabelecimentoResponseDto criarEstabelecimento(EstabelecimentoRequestDto criarEstabelecimentoRequestDto){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -33,6 +37,7 @@ public class EstabelecimentoService {
 
         return estabelecimentoMapper.toDto(estabelecimentoCriado);
     }
+
 
     private String gerarUrl(EstabelecimentoModel estabelecimentoCriado) {
 

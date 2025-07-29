@@ -6,13 +6,17 @@ import com.amaral.SeuCardapioDigital.Mapper.PedidoMapper;
 import com.amaral.SeuCardapioDigital.Model.ItemPedidoModel;
 import com.amaral.SeuCardapioDigital.Model.PedidoModel;
 import com.amaral.SeuCardapioDigital.Model.ProdutoModel;
+import com.amaral.SeuCardapioDigital.Repository.HorarioFuncionamentoRepository;
 import com.amaral.SeuCardapioDigital.Repository.PedidoRepository;
 import com.amaral.SeuCardapioDigital.Repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -29,9 +33,11 @@ public class PedidoService {
 
     @Autowired
     private ProdutoRepository produtoRepository;
-
     @Autowired
     private PedidoMapper pedidoMapper;
+    @Autowired
+    private HorarioFuncionamentoRepository horarioFuncionamentoRepository;
+
 
     public PedidoResponseDto criarPedido(PedidoRequestDto pedidoDto) {
         PedidoModel pedido = pedidoMapper.requestToModel(pedidoDto);
@@ -96,6 +102,14 @@ public class PedidoService {
     public List<PedidoResponseDto> listarTodos(Long cdEstabelecimento) {
         List<PedidoModel> pedidos = pedidoRepository.findByCdEstabelecimento(cdEstabelecimento);
         return pedidos.stream().map(pedidoMapper::toDto).collect(Collectors.toList());
+    }
+
+    public boolean isEstabelecimentoAberto(Long estabelecimentoId) {
+        LocalTime agora = LocalTime.now();
+        DayOfWeek hoje = LocalDate.now().getDayOfWeek();
+
+        return horarioFuncionamentoRepository
+                .isEstabelecimentoAberto(estabelecimentoId, hoje, agora);
     }
 
 

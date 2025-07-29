@@ -3,6 +3,9 @@ package com.amaral.SeuCardapioDigital.Model;
 import jakarta.persistence.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
 @Entity
 @Table(name = "estabelecimentos")
 public class EstabelecimentoModel {
@@ -18,7 +21,7 @@ public class EstabelecimentoModel {
     @Column(name = "emailEstabelecimento", unique = true)
     private String email;
 
-    @Column(name = "senha", unique = true)
+    @Column(name = "senha")
     private String senha;
 
     @Column(name = "cnpj", unique = true)
@@ -29,6 +32,10 @@ public class EstabelecimentoModel {
 
     @Column(name = "idAtivo")
     private int ativo;
+
+    @JoinColumn(name = "cdHorarioFuncionamento")
+    @OneToMany(mappedBy = "estabelecimento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<HorarioFuncionamentoModel> horariosFuncionamento;
 
     @Column(name = "url")
     private String url;
