@@ -37,6 +37,10 @@ public class EstabelecimentoModel {
     @OneToMany(mappedBy = "estabelecimento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<HorarioFuncionamentoModel> horariosFuncionamento;
 
+    @JoinColumn(name = "cdEndereco")
+    @OneToOne(mappedBy = "estabelecimento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private LocalEstabelecimentoModel localEstabelecimento;
+
     @Column(name = "url")
     private String url;
 
