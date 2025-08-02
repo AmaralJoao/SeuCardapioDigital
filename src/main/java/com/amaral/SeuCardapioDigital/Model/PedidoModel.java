@@ -42,6 +42,8 @@ public class PedidoModel {
     @Column(name = "valorTotalDoPedido", nullable = false)
     private BigDecimal valorTotalDoPedido;
 
+    private FormaDePagamentoModel formaDePagamento;
+
     public PedidoModel() {
     }
 
