@@ -42,7 +42,9 @@ public class PedidoModel {
     @Column(name = "valorTotalDoPedido", nullable = false)
     private BigDecimal valorTotalDoPedido;
 
-    private FormaDePagamentoModel formaDePagamento;
+    @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PagamentoPedidoModel pagamento;
+
 
     public PedidoModel() {
     }

@@ -1,8 +1,9 @@
 package com.amaral.SeuCardapioDigital.Model;
 
+import com.amaral.SeuCardapioDigital.Enum.LocalPagamentoEnum;
 import jakarta.persistence.*;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "pagamentoPedido")
@@ -12,11 +13,28 @@ public class PagamentoPedidoModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer idTipoPagamento; // 0 para pagamento no local, 1 para pagamento na estrega
+    @Enumerated(EnumType.STRING)
+    @Column(name = "local_pagamento", nullable = false)
+    private LocalPagamentoEnum localPagamento;
 
-    private FormaDePagamentoDoEstabelecimentoModel formaDePagamentoDoEstabelecimento;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "metodo_pagamento_id", nullable = false)
+    private MetodoPagamentoModel metodoPagamento;
 
-    private Integer pagamentoRealizado; // 0 para não realizado, 1 para realizado
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bandeira_cartao_id")
+    private BandeiraCartaoModel bandeiraCartao;
 
-    private LocalTime dataConfirmaçãoPagamento;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_pagamento_id", nullable = false)
+    private StatusPagamentoModel statusPagamento;
+
+    @Column(name = "data_hora_pagamento")
+    private LocalDateTime dataHoraPagamento;
+
+    @OneToOne
+    @JoinColumn(name = "pedido_id", nullable = false)
+    private PedidoModel pedido;
+
+    // Getters, Setters, equals, hashCode
 }
