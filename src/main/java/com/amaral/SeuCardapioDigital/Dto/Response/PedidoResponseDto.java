@@ -12,9 +12,9 @@ public class PedidoResponseDto {
     private BigDecimal valorTotalDoPedido;
     private Integer codigoPedido;
     private ClienteResponseDto cliente;
-    private EstabelecimentoResponseDto estabelecimento;
-
     private List<ItemPedidoResponseDto> itens;
+    private PagamentoResponseDto pagamento;
+    private EntregaPedidoResponseDto entrega;
 
     public Long getId() {
         return id;

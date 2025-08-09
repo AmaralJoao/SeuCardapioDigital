@@ -1,16 +1,17 @@
 package com.amaral.SeuCardapioDigital.Service;
 
+import com.amaral.SeuCardapioDigital.Dto.Request.EntregaPedidoRequestDto;
+import com.amaral.SeuCardapioDigital.Dto.Request.PagamentoRequestDto;
 import com.amaral.SeuCardapioDigital.Dto.Request.PedidoRequestDto;
 import com.amaral.SeuCardapioDigital.Dto.Response.PedidoResponseDto;
+import com.amaral.SeuCardapioDigital.Enum.StatusPedidoEnum;
 import com.amaral.SeuCardapioDigital.Mapper.PedidoMapper;
-import com.amaral.SeuCardapioDigital.Model.ItemPedidoModel;
-import com.amaral.SeuCardapioDigital.Model.PedidoModel;
-import com.amaral.SeuCardapioDigital.Model.ProdutoModel;
-import com.amaral.SeuCardapioDigital.Repository.HorarioFuncionamentoRepository;
-import com.amaral.SeuCardapioDigital.Repository.PedidoRepository;
-import com.amaral.SeuCardapioDigital.Repository.ProdutoRepository;
+import com.amaral.SeuCardapioDigital.Model.*;
+import com.amaral.SeuCardapioDigital.Repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -29,87 +30,71 @@ import java.util.stream.Collectors;
 public class PedidoService {
 
     @Autowired
-    private PedidoRepository pedidoRepository;
-
+    private EstabelecimentoRepository estabelecimentoRepository;
     @Autowired
-    private ProdutoRepository produtoRepository;
+    private PedidoRepository pedidoRepository;
+    @Autowired
+    private  ProdutoRepository produtoRepository;
+    @Autowired
+    private EstabelecimentoService estabelecimentoService;
+    @Autowired
+    private ClienteService clienteService;
     @Autowired
     private PedidoMapper pedidoMapper;
-    @Autowired
-    private HorarioFuncionamentoRepository horarioFuncionamentoRepository;
 
 
+    @Transactional
     public PedidoResponseDto criarPedido(PedidoRequestDto pedidoDto) {
-        PedidoModel pedido = pedidoMapper.requestToModel(pedidoDto);
+
+        EstabelecimentoModel estabelecimento = estabelecimentoRepository.findById(pedidoDto.getIdEstabelecimento())
+                .orElseThrow(()-> new EntityNotFoundException("Estabelecimento nao encontrado"));
+
+        /*
+        validar se forma de pagamento e acita pelo estabelecimento
+        */
+
+        // ajustar o metodo no estabelecimentoService
+        if (!estabelecimentoService.estabelecimentoIsAberto(pedidoDto.getIdEstabelecimento())){
+            throw new IllegalArgumentException("Estabelecimento fechado");
+        }
+
+
+        // persistindo cliente
+        ClienteModel clientePedido = clienteService.salvarCliente(pedidoDto.getCliente());
+
+        PedidoModel novoPedido = pedidoMapper.requestToModel(pedidoDto);
 
         BigDecimal total = BigDecimal.ZERO;
 
-        for (ItemPedidoModel item : pedido.getItemDoPedido()) {
+        for (ItemPedidoModel item : novoPedido.getItemDoPedido()) {
             ProdutoModel produto = produtoRepository.findById(item.getProduto().getId())
                     .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado: ID " + item.getProduto().getId()));
 
             item.setProduto(produto); // associa o produto corretamente
             item.setPrecoUnitario(produto.getPreco()); // garante o preço atual
-            item.setPedido(pedido); // vincula o item ao pedido
+            item.setPedido(novoPedido); // vincula o item ao pedido
 
 
             BigDecimal subtotal = produto.getPreco().multiply(BigDecimal.valueOf(item.getQuantidade()));
             total = total.add(subtotal);
         }
 
-        pedido.setCodigoDoPedido(geradorIdentificadroDoPedido(pedido.getEstabelecimento().getId()));
-        pedido.setDataHoraDoPedido(LocalDateTime.now());
-        pedido.setStatus(1);
-        pedido.setValorTotalDoPedido(total);
+        novoPedido.setEstabelecimento(estabelecimento);
+        novoPedido.setCliente(clientePedido);
+        novoPedido.setCodigoDoPedido(geradorIdentificadroDoPedido(novoPedido.getEstabelecimento().getId()));
+        novoPedido.setDataHoraDoPedido(LocalDateTime.now());
+        novoPedido.setStatus(StatusPedidoEnum.pedidoCriado);
+        novoPedido.setValorTotalDoPedido(total);
 
-        PedidoModel salvarPedido = pedidoRepository.save(pedido);
-        return pedidoMapper.toDto(salvarPedido);
-    }
+        /*Mapear pagamento e entrega e depois persistir*/
 
-    public PedidoResponseDto editarPedido(Long id, PedidoRequestDto pedidoAtualizadoDto) {
-        PedidoModel pedidoAtualizado = pedidoMapper.requestToModel(pedidoAtualizadoDto);
 
-        PedidoModel pedidoExistente = pedidoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Pedido não encontrado: ID " + id));
 
-        // Limpa os itens antigos
-        pedidoExistente.getItemDoPedido().clear();
-
-        BigDecimal total = BigDecimal.ZERO;
-
-        for (ItemPedidoModel item : pedidoAtualizado.getItemDoPedido()) {
-            ProdutoModel produto = produtoRepository.findById(item.getProduto().getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado: ID " + item.getProduto().getId()));
-
-            item.setProduto(produto);
-            item.setPrecoUnitario(produto.getPreco());
-            item.setPedido(pedidoExistente);
-
-            BigDecimal subtotal = produto.getPreco().multiply(BigDecimal.valueOf(item.getQuantidade()));
-            total = total.add(subtotal);
-
-            pedidoExistente.getItemDoPedido().add(item);
-        }
-
-        pedidoExistente.setValorTotalDoPedido(total);
-        pedidoExistente.setStatus(pedidoAtualizado.getStatus()); // permite atualizar o status, se quiser
-        pedidoExistente.setDataHoraDoPedido(LocalDateTime.now()); // atualiza a data
-
-        PedidoModel salvarPedido = pedidoRepository.save(pedidoExistente);
-        return pedidoMapper.toDto(salvarPedido);
     }
 
     public List<PedidoResponseDto> listarTodos(Long cdEstabelecimento) {
         List<PedidoModel> pedidos = pedidoRepository.findByCdEstabelecimento(cdEstabelecimento);
         return pedidos.stream().map(pedidoMapper::toDto).collect(Collectors.toList());
-    }
-
-    public boolean isEstabelecimentoAberto(Long estabelecimentoId) {
-        LocalTime agora = LocalTime.now();
-        DayOfWeek hoje = LocalDate.now().getDayOfWeek();
-
-        return horarioFuncionamentoRepository
-                .isEstabelecimentoAberto(estabelecimentoId, hoje, agora);
     }
 
 
@@ -137,8 +122,5 @@ public class PedidoService {
         }
     }
 
-    /*public Optional<PedidoModel> buscarPorId(Long id) {
-        return pedidoRepository.findById(id);
-    }*/
 
 }

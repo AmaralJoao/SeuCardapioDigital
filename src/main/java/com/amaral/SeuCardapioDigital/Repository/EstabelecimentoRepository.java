@@ -14,4 +14,6 @@ public interface EstabelecimentoRepository extends JpaRepository<Estabelecimento
 
     @Query("")
     Date findHorarioFuncionaentoByEstabelecimento(Long idEstabelecimento);
+
+    Optional<EstabelecimentoModel> findByIdAndAtivoTrue(Long id);
 }

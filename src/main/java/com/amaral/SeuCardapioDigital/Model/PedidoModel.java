@@ -36,6 +36,7 @@ public class PedidoModel {
     @Column(name = "dataHoraDoPedido", nullable = false)
     private LocalDateTime dataHoraDoPedido;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "idStatus", nullable = false)
     private StatusPedidoEnum status;
 
@@ -45,11 +46,13 @@ public class PedidoModel {
     @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private PagamentoPedidoModel pagamento;
 
+    @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private EntregaPedidoModel entrega;
 
     public PedidoModel() {
     }
 
-    public PedidoModel(long id, List<ItemPedidoModel> itemDoPedido, ClienteModel cliente, EstabelecimentoModel estabelecimento, Long codigoDoPedido, LocalDateTime dataHoraDoPedido, StatusPedidoEnum status, BigDecimal valorTotalDoPedido) {
+    public PedidoModel(long id, List<ItemPedidoModel> itemDoPedido, ClienteModel cliente, EstabelecimentoModel estabelecimento, Long codigoDoPedido, LocalDateTime dataHoraDoPedido, StatusPedidoEnum status, BigDecimal valorTotalDoPedido, PagamentoPedidoModel pagamento, EntregaPedidoModel entrega) {
         this.id = id;
         this.itemDoPedido = itemDoPedido;
         this.cliente = cliente;
@@ -58,6 +61,8 @@ public class PedidoModel {
         this.dataHoraDoPedido = dataHoraDoPedido;
         this.status = status;
         this.valorTotalDoPedido = valorTotalDoPedido;
+        this.pagamento = pagamento;
+        this.entrega = entrega;
     }
 
     public long getId() {
@@ -122,5 +127,21 @@ public class PedidoModel {
 
     public void setValorTotalDoPedido(BigDecimal valorTotalDoPedido) {
         this.valorTotalDoPedido = valorTotalDoPedido;
+    }
+
+    public PagamentoPedidoModel getPagamento() {
+        return pagamento;
+    }
+
+    public void setPagamento(PagamentoPedidoModel pagamento) {
+        this.pagamento = pagamento;
+    }
+
+    public EntregaPedidoModel getEntrega() {
+        return entrega;
+    }
+
+    public void setEntrega(EntregaPedidoModel entrega) {
+        this.entrega = entrega;
     }
 }

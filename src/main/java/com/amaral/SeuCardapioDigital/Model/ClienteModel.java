@@ -66,4 +66,12 @@ public class ClienteModel {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
+
+    public List<PedidoModel> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(List<PedidoModel> pedidos) {
+        this.pedidos = pedidos;
+    }
 }

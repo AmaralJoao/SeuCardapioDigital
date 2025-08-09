@@ -11,7 +11,7 @@ public class ClienteRequestDto {
     @NotNull(message = "nome é obrigatorio")
     private String nomeDocliente;
     @NotNull(message = "ddd é obrigadtorio")
-    private int ddd;
+    private Integer ddd;
     @NotNull(message = "telefone é obrigadtorio")
     private String telefone;
 

@@ -39,6 +39,14 @@ public class EstabelecimentoService {
     }
 
 
+    public boolean estabelecimentoIsAberto(long cdEstabelecimento){
+        LocalTime agora = LocalTime.now();
+        DayOfWeek hoje = LocalDate.now().getDayOfWeek();
+
+        return horarioFuncionamentoRepository
+                .isEstabelecimentoAberto(cdEstabelecimento, hoje, agora);
+    }
+
     private String gerarUrl(EstabelecimentoModel estabelecimentoCriado) {
 
         return String.format(estabelecimentoCriado.getId() + "-" + gerarSlug(estabelecimentoCriado.getNome()));
@@ -50,4 +58,5 @@ public class EstabelecimentoService {
                 .replaceAll("\\s+", "-");
 
     }
+
 }
